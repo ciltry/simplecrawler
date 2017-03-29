@@ -3,6 +3,7 @@ package dev.sidney.crawler.simplecrawler;
 import org.apache.http.client.methods.HttpGet;
 
 import dev.sidney.crawler.simplecrawler.dto.TaskItemDTO;
+import dev.sidney.crawler.simplecrawler.exceptions.BusinessException;
 
 public interface ICrawlerTask {
 
@@ -34,4 +35,6 @@ public interface ICrawlerTask {
 	
 	boolean skipUrl(String url);
 	
+	void validate(TaskItemDTO taskItem, String pageContent) throws BusinessException;
+	void handleException(TaskItemDTO taskItem, Exception e);
 }

@@ -11,4 +11,5 @@ import dev.sidney.devutil.store.domain.AbstractDomain;
  *
  */
 public interface TaskItemDomain extends AbstractDomain<TaskItemDTO>{
+	void prepareTaskItem(String taskId);
 }

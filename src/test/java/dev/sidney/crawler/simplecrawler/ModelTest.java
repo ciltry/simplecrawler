@@ -33,7 +33,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import dev.sidney.crawler.simplecrawler.domain.TaskItemDomain;
 import dev.sidney.crawler.simplecrawler.dto.TaskItemDTO;
-import dev.sidney.crawler.simplecrawler.model.Task;
 import dev.sidney.crawler.simplecrawler.model.TaskItem;
 import dev.sidney.devutil.store.dao.CommonDAO;
 import dev.sidney.devutil.store.domain.DomainQuery;
@@ -66,10 +65,10 @@ public class ModelTest {
 	@Test
 	public void init() {
 		proxyDdao.dropStore(Server.class);
-		dao.dropStore(Task.class);
-		dao.dropStore(TaskItem.class);
+//		dao.dropStore(Task.class);
+//		dao.dropStore(TaskItem.class);
 		proxyDdao.init();
-		dao.init();
+//		dao.init();
 	}
 	
 	@Test
@@ -148,7 +147,7 @@ public class ModelTest {
 	@Test
 	public void test4() {
 //		ICrawlerTask task = new CrawlerKuaiDaiLi();
-		task.setMaxThreads(1);
+		task.setMaxThreads(5);
 		task.setStartUrl("http://www.kuaidaili.com/");
 //		task.setStartUrl("http://www.baidu.com/");
 //		task.setStartUrl("http://ifeve.com/overview/");

@@ -7,7 +7,7 @@
     </layout>
   </appender>
    
-  <logger name="dev.sidney.devutil" level="INFO"/>
+  <logger name="dev.sidney.devutil" level="ERROR"/>
    
  
   <root level="INFO">

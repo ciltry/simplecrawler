@@ -4,6 +4,8 @@
 package dev.sidney.crawler.simplecrawler;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -126,16 +128,29 @@ public abstract class AbstractCrawlerTask implements ICrawlerTask, Runnable {
 			
 		}
 //		executorService = Executors.newFixedThreadPool(this.getMaxThreads() + 1);
-		BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(3);
-		executorService = new ThreadPoolExecutor(4, 4, 1, TimeUnit.HOURS, queue, new ThreadPoolExecutor.CallerRunsPolicy());
-		executorService.execute(this);
+		BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(4){
+			@Override
+			public boolean offer(Runnable arg0) {
+				try {
+					this.put(arg0);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}};
+		executorService = new ThreadPoolExecutor(this.getMaxThreads(), this.getMaxThreads(), 1, TimeUnit.HOURS, queue, new ThreadPoolExecutor.DiscardPolicy());
+		new Thread(this).start();
 		return this.getTaskId();
 	}
 	
 	private TaskDTO loadTask() {
 		TaskDTO task = new TaskDTO();
 		task.setTaskName(this.getTaskName());
-		return this.taskDomain.query(task);
+		task = this.taskDomain.query(task);
+		if (task != null) {
+			this.taskItemDomain.prepareTaskItem(task.getId());
+		}
+		return task;
 	}
 	
 	private String normalizeUrl(String url) {
@@ -164,7 +179,7 @@ public abstract class AbstractCrawlerTask implements ICrawlerTask, Runnable {
 	}
 	@Override
 	public void run() {
-		synchronized (this.getTaskId().intern()) {
+//		synchronized (this.getTaskId().intern()) {
 			while (true) {
 				TaskItemDTO taskItem = this.peekStandbyTaskItem();
 				if (taskItem == null) {
@@ -183,7 +198,7 @@ public abstract class AbstractCrawlerTask implements ICrawlerTask, Runnable {
 					this.executorService.execute(worker);
 				}
 			}
-		}
+//		}
 	}
 	
 	private TaskItemDTO peekStandbyTaskItem() {
@@ -240,6 +255,19 @@ public abstract class AbstractCrawlerTask implements ICrawlerTask, Runnable {
 		return !url.toLowerCase().contains("javascript:");
 	}
 	
+	private String getStackTrace(Throwable t) {  
+	    StringWriter sw = new StringWriter();  
+	    PrintWriter pw = new PrintWriter(sw);  
+	  
+	    try {
+	        t.printStackTrace(pw);  
+	        return sw.toString();  
+	    }  
+	    finally {
+	        pw.close();  
+	    }  
+	} 
+	
 	private List<String> scanUrl(URL pageUrl, String pageContent) {
 		List<String> list = new ArrayList<String>();
 		Pattern pt = Pattern.compile("<\\s*a\\s+[^>]*href=\"([^\"]*)\"", Pattern.CASE_INSENSITIVE);
@@ -268,13 +296,13 @@ public abstract class AbstractCrawlerTask implements ICrawlerTask, Runnable {
 	
 	private void taskItemFinished(TaskItemDTO taskItemDTO) {
 		
-		synchronized (this.getTaskId().intern()) {
+//		synchronized (this.getTaskId().intern()) {
 			TaskItemDTO updateDto = new TaskItemDTO();
 			updateDto.setId(taskItemDTO.getId());
 			updateDto.setStatus(TaskItemStatusEnum.SUCCESS.getCode());
 			this.taskItemDomain.updateById(updateDto);
-			this.getTaskId().intern().notify();
-		}
+//			this.getTaskId().intern().notify();
+//		}
 	}
 	
 	private void updateToProcessing(TaskItemDTO taskItemDTO) {
@@ -307,5 +335,14 @@ public abstract class AbstractCrawlerTask implements ICrawlerTask, Runnable {
             };  
             executor.execute(run);  
         }  
-    }  
+    }
+	@Override
+	public final void handleException(TaskItemDTO taskItem, Exception e) {
+		TaskItemDTO update = new TaskItemDTO();
+		update.setId(taskItem.getId());
+		update.setStatus("E");
+		update.setExceptionTrace(getStackTrace(e));
+		this.taskItemDomain.updateById(update);
+	}
+	
 }

@@ -20,12 +20,14 @@ public class TaskItem extends BaseModel {
 	public static final String COLUMN_STATUS = "STATUS";
 	@FieldMapping("url")
 	public static final String COLUMN_URL = "URL";
+	@FieldMapping("taskId")
+	public static final String COLUMN_TASK_ID = "TASK_ID";
 	
 	/**
 	 * uid
 	 */
 	private static final long serialVersionUID = -5625541371152780731L;
-	@Field(comment="任务ID", type=FieldType.CHAR, size=36, nullable=false)
+	@Field(comment="任务ID", type=FieldType.CHAR, columnName = COLUMN_TASK_ID, size=36, nullable=false)
 	private String taskId;
 	@Field(comment="父ID", type=FieldType.CHAR, size=36)
 	private String parentTaskItem;

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dev.sidney.crawler.simplecrawler.dto.TaskItemDTO;
+
 /**
  * @author Sidney
  *
@@ -18,9 +20,9 @@ public abstract class BaseDataCapture<T> implements DataCapture<T>{
 	 * @see dev.sidney.crawler.simplecrawler.datacapture.IDataCapture#captureData(java.lang.String)
 	 */
 	@Override
-	public abstract List<T> captureData(String input);
+	public abstract List<T> captureData(TaskItemDTO taskItem, String input);
 	
-	protected final List<T> captureData(String captureKey, Pattern pt, String input) {
+	protected final List<T> captureData(TaskItemDTO taskItem, String captureKey, Pattern pt, String input) {
 		Matcher matcher = pt.matcher(input);
 		List<T> list = new ArrayList<T>();
 		while (matcher.find()) {
@@ -30,7 +32,7 @@ public abstract class BaseDataCapture<T> implements DataCapture<T>{
 				dataArray[i] = matcher.group(i);
 			}
 			
-			List<T> subList = this.buildData(captureKey, dataArray);
+			List<T> subList = this.buildData(taskItem, captureKey, dataArray);
 			if (subList != null) {
 				list.addAll(subList);
 			}
@@ -38,5 +40,5 @@ public abstract class BaseDataCapture<T> implements DataCapture<T>{
 		return list;
 	}
 	
-	public abstract List<T> buildData(String captureKey, String[] dataList);
+	public abstract List<T> buildData(TaskItemDTO taskItem, String captureKey, String[] dataList);
 }

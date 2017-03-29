@@ -3,8 +3,10 @@
  */
 package dev.sidney.crawler.simplecrawler;
 
+import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
@@ -68,20 +70,24 @@ public class CrawlerWorker implements Runnable {
 
 	@Override
 	public void run() {
+		String content = null;
 		try {
 			System.out.println("****" + Thread.currentThread().getName() +" : " + this.getTaskItem().getUrl());
-			String content = this.getPageContent();
+			content = this.getPageContent();
+			this.getTask().validate(this.getTaskItem(), content);
 			this.getTask().process(this.getTaskItem(), content);
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (Exception e) {
-			e.printStackTrace();
+			this.getTask().handleException(this.getTaskItem(), e);
+			if (content != null) {
+				try {
+					FileUtils.write(new File(this.getTaskItem().getId() + ".txt"), content);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
 		}
 	}
+	
 	
 	private String getPageContent(HttpEntity entity) throws ParseException, IOException  {
 		String str = EntityUtils.toString(entity);
@@ -90,8 +96,8 @@ public class CrawlerWorker implements Runnable {
 	
 	private String getPageContent() throws ClientProtocolException, IOException {
 		HttpGet httpget = new HttpGet(this.getTaskItem().getUrl());
-//		httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0");
-		httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.22 Safari/537.36 SE 2.X MetaSr 1.0");
+		httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0");
+//		httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.22 Safari/537.36 SE 2.X MetaSr 1.0");
 //		httpget.setHeader("Accept-Encoding", "identity");
 		httpget.setHeader("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3");
 //		httpget.setHeader("Accept-Encoding", "gzip, deflate");

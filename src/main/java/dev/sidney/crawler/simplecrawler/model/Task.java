@@ -4,6 +4,7 @@
 package dev.sidney.crawler.simplecrawler.model;
 
 import dev.sidney.devutil.store.annotation.Field;
+import dev.sidney.devutil.store.annotation.FieldMapping;
 import dev.sidney.devutil.store.enums.FieldType;
 import dev.sidney.devutil.store.model.BaseModel;
 
@@ -13,7 +14,9 @@ import dev.sidney.devutil.store.model.BaseModel;
  */
 public class Task extends BaseModel {
 
+	@FieldMapping("taskName")
 	public static final String COLUMN_TASK_NAME = "TASK_NAME";
+	@FieldMapping("startUrl")
 	public static final String COLUMN_START_URL = "START_URL";
 	
 	/**
