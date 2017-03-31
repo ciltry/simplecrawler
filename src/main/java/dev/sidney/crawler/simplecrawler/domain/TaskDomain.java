@@ -12,4 +12,5 @@ import dev.sidney.devutil.store.domain.AbstractDomain;
  */
 public interface TaskDomain extends AbstractDomain<TaskDTO> {
 
+	boolean isTaskFinished(String taskId);
 }

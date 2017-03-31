@@ -32,9 +32,11 @@ public interface ICrawlerTask {
 	void initHttpGet(HttpGet httpGet);
 	
 	void process(TaskItemDTO taskItem, String pageContent);
+	void processImageData(TaskItemDTO taskItem, byte[] data);
 	
 	boolean skipUrl(String url);
 	
 	void validate(TaskItemDTO taskItem, String pageContent) throws BusinessException;
 	void handleException(TaskItemDTO taskItem, Exception e);
+	boolean isImageExists(String url);
 }

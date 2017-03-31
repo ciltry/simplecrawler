@@ -22,6 +22,8 @@ public class TaskItem extends BaseModel {
 	public static final String COLUMN_URL = "URL";
 	@FieldMapping("taskId")
 	public static final String COLUMN_TASK_ID = "TASK_ID";
+	@FieldMapping("type")
+	public static final String COLUMN_TYPE = "TYPE";
 	
 	/**
 	 * uid
@@ -37,6 +39,8 @@ public class TaskItem extends BaseModel {
 	private String status;
 	@Field(comment="异常追踪", type=FieldType.VARCHAR2, size = 4000)
 	private String exceptionTrace;
+	@Field(comment="任务类型  IMG,HTML", type=FieldType.VARCHAR2, size=20, columnName=COLUMN_TYPE)
+	private String type;
 	public String getTaskId() {
 		return taskId;
 	}
@@ -67,5 +71,10 @@ public class TaskItem extends BaseModel {
 	public void setExceptionTrace(String exceptionTrace) {
 		this.exceptionTrace = exceptionTrace;
 	}
-	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 }

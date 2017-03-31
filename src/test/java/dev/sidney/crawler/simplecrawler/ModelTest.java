@@ -59,6 +59,9 @@ public class ModelTest {
 	
 	@Resource(name="kuaidaili")
 	private ICrawlerTask task;
+	@Resource(name="imgTask")
+	private ICrawlerTask imgTask;
+	
 	@Resource
 	private ServerDomain serverDomain;
 	
@@ -154,6 +157,21 @@ public class ModelTest {
 //		task.setStartUrl("http://poss-test.masapay.com/poss-web/login.jsp?sign=You%20are%20not%20login");
 		task.setTaskName("快代理");
 		task.start();
+		
+		try {
+			Thread.sleep(50000000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void test6() {
+		imgTask.setMaxThreads(5);
+		imgTask.setStartUrl("http://tieba.baidu.com/f?kw=%E6%AD%BB%E7%A5%9E&ie=utf-8");
+		imgTask.setTaskName("死神图片20");
+		imgTask.start();
 		
 		try {
 			Thread.sleep(50000000);

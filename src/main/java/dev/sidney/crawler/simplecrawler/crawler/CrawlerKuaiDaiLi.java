@@ -3,10 +3,13 @@
  */
 package dev.sidney.crawler.simplecrawler.crawler;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +35,7 @@ public class CrawlerKuaiDaiLi extends AbstractCrawlerTask {
 	
 	@Override
 	public void initHttpGet(HttpGet httpGet) {
-		httpGet.setHeader("Cookie", "_ga=GA1.2.208353969.1490336819; Hm_lvt_7ed65b1cc4b810e9fd37959c9bb51b31=1490327374,1490336051,1490336240,1490751870; channelid=0; sid=1490755207720413; Hm_lpvt_7ed65b1cc4b810e9fd37959c9bb51b31=1490756207; _ydclearance=b2f63576e1cb8a3392db1687-0326-485a-9705-99dfa981cd77-1490773935");
+		httpGet.setHeader("Cookie", "_ga=GA1.2.208353969.1490336819; Hm_lvt_7ed65b1cc4b810e9fd37959c9bb51b31=1490327374,1490336051,1490336240,1490751870; channelid=0; sid=1490773659460788; Hm_lpvt_7ed65b1cc4b810e9fd37959c9bb51b31=1490774160; _ydclearance=619923b471634c5257141523-08aa-4fad-b449-2fa0698b9e1c-1490781354; _gat=1");
 	}
 
 	@Override
@@ -67,6 +70,16 @@ public class CrawlerKuaiDaiLi extends AbstractCrawlerTask {
 	public void validate(TaskItemDTO taskItem, String pageContent) throws BusinessException {
 		if (!pageContent.contains("title")) {
 			throw new BusinessException("cookie不对");
+		}
+	}
+
+	@Override
+	public void processImage(String url, byte[] data) {
+		try {
+			FileUtils.writeByteArrayToFile(new File("img/" + this.getFileNameFromUrl(url)), data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

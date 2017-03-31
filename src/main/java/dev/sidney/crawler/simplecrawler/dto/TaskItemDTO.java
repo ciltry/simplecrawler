@@ -23,6 +23,14 @@ public class TaskItemDTO extends BaseDTO<TaskItem> {
 	private String url;
 	private String status;
 	private String exceptionTrace;
+	private String type;
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	public String getTaskId() {
 		return taskId;
 	}
@@ -66,6 +74,7 @@ public class TaskItemDTO extends BaseDTO<TaskItem> {
 		model.setStatus(dto.getStatus());
 		model.setTaskId(dto.getTaskId());
 		model.setUrl(dto.getUrl());
+		model.setType(dto.getType());
 		return model;
 	}
 	@Override
@@ -80,6 +89,7 @@ public class TaskItemDTO extends BaseDTO<TaskItem> {
 			dto.setStatus(model.getStatus());
 			dto.setTaskId(model.getTaskId());
 			dto.setUrl(model.getUrl());
+			dto.setType(model.getType());
 		}
 	}
 	
